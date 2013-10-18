@@ -56,15 +56,15 @@ end
 # 'banana' becomes 'ban'. If the string is an odd number of letters
 # round up - so 'apple' becomes 'app'
 def get_first_half_of_string(string)
-	# half_length = (0.5*string.length).round 
-	# get certain characters of string
+	half_length = (0.5*string.length).round 
+	string[0...(half_length)]
 end
 
 # turn a positive integer into a negative integer. A negative integer
 # stays negative
 def make_numbers_negative(number)
-	number = number.abs
-	number = -(number)
+	-(number.abs)
+	
 end
 
 # turn an array of numbers into two arrays of numbers, one an array of 
@@ -72,9 +72,10 @@ end
 # even numbers come first
 # so [1, 2, 3, 4, 5, 6] becomes [[2, 4, 6], [1, 3, 5]]
 def separate_array_into_even_and_odd_numbers(array)
-	even = array.select {|number| number.even?}
-	odd = array.select {|number| number.odd?}
-	array = [even, odd]
+	# even = array.select {|number| number.even?}
+	# odd = array.select {|number| number.odd?}
+	# array = [even, odd]
+	array.partition { |v| v.even? }  
 end
 
 # count the numbers of elements in an element which are palindromes
@@ -105,7 +106,7 @@ end
 # turn an array into itself repeated twice. So [1, 2, 3]
 # becomes [1, 2, 3, 1, 2, 3]
 def double_array(array)
-	array + array 
+	 array + array 
 end
 
 # convert a symbol into a string
@@ -124,8 +125,9 @@ end
 # [1, 3, 5, 4, 1, 2, 6, 2, 1, 3, 7]
 # becomes [1, 3, 5, 4, 1, 2]
 def get_elements_until_greater_than_five(array)
-	# Enumerable
-
+	# Enumerator http://ruby-doc.org/core-2.0.0/Array.html#method-i-take_while
+	# note: |i| in the example is not index, but element 
+	array.take_while { |element| element <= 5 }  
 end
 
 # turn an array (with an even number of elements) into a hash, by
@@ -161,7 +163,8 @@ end
 # take out all the capital letters from a string
 # so 'Hello JohnDoe' becomes 'ello ohnoe'
 def remove_capital_letters_from_string(string)
-
+	# regular expression
+	string.gsub(/[A-Z]/, '')   			
 end
 
 # round up a float up and convert it to an Integer,
@@ -195,9 +198,15 @@ end
 # 'the lion the witch and the wardrobe' becomes
 # 'The Lion the Witch and the Wardrobe'
 def titleize_a_string(string)
-	# if string != ('a')
-	# 	string.capitalize 
-	# elsif string not include 
+	# break down to each individual words
+	string.split.map do |word|
+	 	if  (word != "and") || (word !="the") || (word != "a") 
+			word.capitalize
+			# return string
+		end 
+	end 
+	# string.split
+	# return string 
 end
 
 # return true if a string contains any special characters
@@ -225,8 +234,8 @@ end
 
 # count the number of words in a file
 def word_count_a_file(file_path)
-	# file_path = ARGV[0] || "lorem.txt"
-	# WORDS_COUNT = {}
+	 # file = File.open(file_name, "r")
+	
 end 
 
 
