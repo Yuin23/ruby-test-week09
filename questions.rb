@@ -125,9 +125,7 @@ end
 # becomes [1, 3, 5, 4, 1, 2]
 def get_elements_until_greater_than_five(array)
 	# Enumerable
-	# until i > 5 do 
-	# 	array.select { |i| }
-	# end 
+
 end
 
 # turn an array (with an even number of elements) into a hash, by
@@ -142,8 +140,7 @@ end
 # . e.g. the array ['cat', 'dog', 'fish'] becomes
 # ['a', 'c', 'd', 'f', 'g', 'h', 'i', 'o', 's', 't']
 def get_all_letters_in_array_of_words(array)
-	# array.sort { |word| word.chars}
-	# joints 
+	array.join.chars.sort
 end
 
 # swap the keys and values in a hash. e.g.
