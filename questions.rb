@@ -15,8 +15,8 @@ end
 
 # remove instances of nil AND false from an array
 def remove_nils_and_false_from_array(array)
-	array.compact!
-	array.keep_if {|word| word != false}
+	# array.compact!
+	array.keep_if {|word| word != nil && word != false}
 end
 
 # don't reverse the array, but reverse every word inside it. e.g.
@@ -36,7 +36,8 @@ end
 # discard the first 3 elements of an array, 
 # e.g. [1, 2, 3, 4, 5, 6] becomes [4, 5, 6]
 def all_elements_except_first_3(array)
-	array = array - array.slice!(0..2)		 
+	# array - array.slice!(0..2)
+	array.drop(3)		 
 end
 
 # add an element to the beginning of an array
@@ -75,7 +76,7 @@ def separate_array_into_even_and_odd_numbers(array)
 	# even = array.select {|number| number.even?}
 	# odd = array.select {|number| number.odd?}
 	# array = [even, odd]
-	array.partition { |v| v.even? }  
+	array.partition { |num| num.even? }  
 end
 
 # count the numbers of elements in an element which are palindromes
@@ -84,7 +85,7 @@ end
 # are 2 palindromes (bob and radar), so the method should return 2
 def number_of_elements_that_are_palindromes(array)
 	array.keep_if { |element| element == element.reverse}
-	array = array.count
+	array.count
 end
 
 # return the shortest word in an array
@@ -106,7 +107,7 @@ end
 # turn an array into itself repeated twice. So [1, 2, 3]
 # becomes [1, 2, 3, 1, 2, 3]
 def double_array(array)
-	 array + array 
+	array + array 
 end
 
 # convert a symbol into a string
@@ -117,7 +118,7 @@ end
 # get the average from an array, rounded to the nearest integer
 # so [10, 15, 25] should return 17
 def average_of_array(array)
-	array = (array.inject(:+).to_f / array.size).round 
+	(array.inject(:+).to_f / array.size).round 
 end
 
 # get all the elements in an array, up until the first element
@@ -134,7 +135,7 @@ end
 # pairing up elements. e.g. ['a', 'b', 'c', 'd'] becomes
 # {'a' => 'b', 'c' => 'd'}
 def convert_array_to_a_hash(array)
-	array = Hash[*array.flatten]
+	Hash[*array.flatten]
 end
 
 # get all the letters used in an array of words and return
@@ -199,20 +200,19 @@ end
 # 'The Lion the Witch and the Wardrobe'
 def titleize_a_string(string)
 	# break down to each individual words
-	string.split.map do |word|
-	 	if  (word != "and") || (word !="the") || (word != "a") 
-			word.capitalize
-			# return string
+	word = string.split.each do |w|
+		w.capitalize! if w != "a" && w != "and" && w != "the"
 		end 
-	end 
-	# string.split
-	# return string 
-end
+	word[0].capitalize!
+	word.join(" ")
+
+ end
 
 # return true if a string contains any special characters
 # where 'special character' means anything apart from the letters
 # a-z (uppercase and lower) or numbers
 def check_a_string_for_special_characters(string)
+	!(string =~ /^[a-zA-Z0-9]*$/)
 end
 
 # get the upper limit of a range. e.g. for the range 1..20, you
@@ -234,8 +234,7 @@ end
 
 # count the number of words in a file
 def word_count_a_file(file_path)
-	 # file = File.open(file_name, "r")
-	
+	File.open(file_path).read().split.count
 end 
 
 
@@ -245,12 +244,23 @@ end
 # called call_method_from_string('foobar')
 # the method foobar should be invoked
 def call_method_from_string(str_method)
+	# I dont fully understand call method, and invoke
+	send(str_method)
 end
 
 # return true if the date is a uk bank holiday for 2014
 # the list of bank holidays is here:
 # https://www.gov.uk/bank-holidays
 def is_a_2014_bank_holiday?(date)
+	bank_holiday = [Time.new(2014, 1, 1),
+					Time.new(2014, 4, 18),
+					Time.new(2014, 4, 21),
+					Time.new(2014, 5, 5),
+					Time.new(2014, 5, 26),
+					Time.new(2014, 8, 25),
+					Time.new(2014, 12, 25),
+					Time.new(2014, 12, 26)]
+	bank_holiday.include? (date)
 end
 
 # given your birthday this year, this method tells you
@@ -258,6 +268,26 @@ end
 # e.g. january 1st, will next be a friday in 2016
 # return the day as a capitalized string like 'Friday'
 def your_birthday_is_on_a_friday_in_the_year(birthday)
+	#  Why can not define variables pre-loop ? 
+	# 
+	#  	birthday = Time.new(year, month, day)
+	# 	year = birthday.year
+	# 	month = birthday.month
+	# 	day = birthday.day 
+	# until birthday.wday == 5
+	# 	year += 1
+	# end 
+	# 	birthday.year
+
+	until birthday.wday == 5
+			year = birthday.year
+			month = birthday.month
+			day = birthday.day 
+		birthday = Time.new(year+1, month, day)
+			# below doesnt work, into infinite/very long loop while tesing.. why?
+			# year += 1    
+	end 
+		birthday.year 
 end
 
 # in a file, total the number of times words of different lengths
@@ -266,12 +296,26 @@ end
 # and 1 that is 4 letters long. Return it as a hash in the format
 # word_length => count, e.g. {2 => 1, 3 => 5, 4 => 1}
 def count_words_of_each_length_in_a_file(file_path)
+	# Why use these two lines do not work?  
+	# Some counts are different. Is [a-zA-Z] not OK?
+		# file = File.open(file_path).read()
+		# words = file.split.keep_if {|word| word =~ /^[a-zA-Z]*$/}
+
+	file = File.open(file_path).read()
+	words = file.gsub(/[,.:;"'!@€£$%&*()?><~]/, '').split
+
+	hash = Hash.new(0)
+	words.each do |word|
+		hash[word.length] = hash[word.length]+1 
+	end 
+	hash
 end
 
 # implement fizzbuzz without modulo, i.e. the % method
 # go from 1 to 100
 # (there's no RSpec test for this one)
 def fizzbuzz_without_modulo
+
 end
 
 # print the lyrics of the song 99 bottles of beer on the wall
@@ -281,4 +325,23 @@ end
 # at the end.
 # (there's no RSpec test for this one)
 def ninety_nine_bottles_of_beer
+	 n = 99
+	 while n > -1
+	 	if n > 1
+	 	puts "#{n} bottles of beer on the wall, #{n} bottles of beer."
+		puts "Take one down and pass it around, #{(n-1)} bottles of beer on the wall."
+		
+		elsif n == 1
+		puts "1 bottle of beer on the wall, 1 bottle of beer."
+		puts "Take one down and pass it around, no more bottles of beer on the wall."
+		
+		else n == 0 
+		puts "No more bottles of beer on the wall, no more bottles of beer."
+		puts "Go to the store and buy some more, 99 bottles of beer on the wall."
+		
+		end 
+		n -= 1
+	end 
 end
+
+
